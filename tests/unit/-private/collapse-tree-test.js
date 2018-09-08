@@ -174,12 +174,13 @@ module('Unit | Private | CollapseTree', function(hooks) {
   });
 
   test('rowMeta index works', function(assert) {
-    let rows = generateTree([1, [2, 3, [4, 5], 6]]);
+    let rows = generateTree([1, [2, 3], 4]);
     tree = CollapseTree.create({ rows, rowMetaCache, enableTree: true });
 
     let nodes = tree.toArray();
     nodes.forEach((node, i) => assert.equal(metaFor(node).get('index'), i));
 
+    // [0, 1, [2, 3], 4]
     rows.insertAt(0, { value: 0 });
 
     let firstNode = run(() => tree.objectAt(0));

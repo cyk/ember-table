@@ -86,6 +86,21 @@ export class TableRowMeta extends EmberObject {
     return isArray(children) && get(children, 'length') > 0;
   }
 
+  @computed('offset')
+  get index() {
+    return get(this, 'offset') - 1;
+  }
+
+  @computed('_parentMeta.offset', '_offset')
+  get offset() {
+    if (!get(this, '_parentMeta')) {
+      return get(this, '_offset');
+    }
+    let o = get(this, '_parentMeta.offset') + get(this, '_offset');
+
+    return o;
+  }
+
   @computed('_parentMeta.depth')
   get depth() {
     let parentMeta = get(this, '_parentMeta');
@@ -269,6 +284,7 @@ function setupRowMeta(tree, row, parentRow, node) {
   set(rowMeta, '_tree', tree);
   set(rowMeta, '_rowValue', row);
   set(rowMeta, '_parentMeta', parentRowMeta);
+  set(rowMeta, '_offset', parentRow.children.indexOf(row) + 1);
 
   if (node) {
     set(node, 'rowMeta', rowMeta);
@@ -696,14 +712,7 @@ export default class CollapseTree extends EmberObject.extend(EmberArray) {
 
     // We add a "fake" top level node to account for the root node
     let normalizedIndex = index + 1;
-    let result = get(this, 'root').objectAt(normalizedIndex);
-    let meta = this.get('rowMetaCache').get(result);
-
-    // Set the perceived index on the meta. It should be safe to do this here, since
-    // the row will always be retrieved via `objectAt` before being used.
-    set(meta, 'index', index);
-
-    return result;
+    return get(this, 'root').objectAt(normalizedIndex);
   }
 
   forEach(fn) {
