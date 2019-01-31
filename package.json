@@ -96,6 +96,9 @@
     "husky": "^0.14.3",
     "loader.js": "^4.2.3"
   },
+  "resolutions": {
+    "**/tough-cookie": "~2.4.0"
+  },
   "engines": {
     "node": "6.* || >= 7.*"
   },
